@@ -1,23 +1,20 @@
+
 from pytube import YouTube
 from sys import argv
-from moviepy.editor import *
+import os
 
-link = argv[1]
+link = input("Paste URL here: ")
 yt = YouTube(link)
 
 print("Title: ", yt.title)
 
-print("Views: ", yt.views)
+yd = yt.streams.filter(only_audio=True).first()
+out = yd.download("D:/")
 
-yd = yt.streams.get_highest_resolution()
+base, ext = os.path.splitext(out)
+new_file = base + '.mp3'
+os.rename(out, new_file)
 
-yd.download("D:/")
+print(yt.title + " saved")
 
-mp4_file = r'D:/3 PYTHON AUTOMATION PROJECTS FOR BEGINNERS.mp4'
-mp3_file = r'D:/3 PYTHON AUTOMATION PROJECTS FOR BEGINNERS.mp3'
-
-videoclip = VideoFileClip(mp4_file)
-audioclip = videoclip.audio
-audioclip.write_audiofile(mp3_file)
-audioclip.close()
-videoclip.close()
+input("Press anything to exit...")
