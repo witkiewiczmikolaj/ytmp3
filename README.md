@@ -1,1 +1,5 @@
-Simple mp3 downloader, just run and paste video URL
+# Simple mp3 downloader
+
+## Basic usage
+
+Just run and paste video URL
