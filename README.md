@@ -1,4 +1,4 @@
-# Simple mp3 downloader
+# Simple YT to MP3 converter
 
 ## Basic usage
 
