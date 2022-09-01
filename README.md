@@ -2,4 +2,4 @@
 
 ## Basic usage
 
-Just run and paste video URL
+Just run, choose directory, paste video URL and click big green button
