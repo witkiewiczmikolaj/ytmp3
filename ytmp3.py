@@ -1,8 +1,6 @@
-from cgitb import text
 import tkinter as tk
 from tkinter.filedialog import askdirectory
 from tkinter import DISABLED, NORMAL, Label
-from winreg import REG_WHOLE_HIVE_VOLATILE
 from pytube import YouTube
 import os
 
@@ -35,7 +33,6 @@ def runApp():
 
     succ.place(width=150, height=10, x=150, y=143)
     
-
 def on_enter_run(e):
    runApps.config(background='#182629')
    
