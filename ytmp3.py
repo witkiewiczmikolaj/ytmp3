@@ -3,13 +3,17 @@ from tkinter.filedialog import askdirectory
 from tkinter import DISABLED, NORMAL, Label
 from pytube import YouTube
 import os
-import time
 
 # Setting app title, icon and disabling possibility to resize window.  
 root = tk.Tk()
 root.title("YT to MP3")
 root.resizable(False, False)
 root.iconbitmap("icon.ico")
+
+def find(name, path):
+    for root, dir, files in os.walk(path):
+        if name in files:
+            return True
 
 # Choosing directory
 def addFolder():
@@ -21,6 +25,7 @@ def addFolder():
     pathDisp.config(state=DISABLED)
 
 addFolder.path = None
+
 # Downloading yt video with sound only and renaming it to .mp3 file
 def runApp():
     if addFolder.path == None:
@@ -31,15 +36,21 @@ def runApp():
       link = pasteUrl.get()
       yt = YouTube(link)
       yd = yt.streams.filter(only_audio=True).first()
-      out = yd.download(addFolder.path)
+      yttitle = yt.title + '.mp3'
+      
+      if find(yttitle, addFolder.path):
+         succ = Label(text="You already have this file", bg="white", font=("Arial", 8))
+         succ.place(width=150, height=10, x=150, y=143)     
+         root.after(3000, lambda: succ.destroy())
+      else:
+         out = yd.download(addFolder.path)
+         base, ext = os.path.splitext(out)
+         new_file = base + '.mp3'
+         os.rename(out, new_file)
 
-      base, ext = os.path.splitext(out)
-      new_file = base + '.mp3'
-      os.rename(out, new_file)
-
-      succ = Label(text="Success!", bg="white", font=("Arial", 8))
-      succ.place(width=150, height=10, x=150, y=143)     
-      root.after(3000, lambda: succ.destroy())
+         succ = Label(text="Success!", bg="white", font=("Arial", 8))
+         succ.place(width=150, height=10, x=150, y=143)     
+         root.after(3000, lambda: succ.destroy())
     
       
     
