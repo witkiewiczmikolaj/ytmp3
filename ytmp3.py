@@ -10,6 +10,7 @@ root.title("YT to MP3")
 root.resizable(False, False)
 root.iconbitmap("icon.ico")
 
+# Scanning for files used to check if file is already downloaded
 def find(name, path):
     for root, dir, files in os.walk(path):
         if name in files:
@@ -26,7 +27,7 @@ def addFolder():
 
 addFolder.path = None
 
-# Downloading yt video with sound only and renaming it to .mp3 file
+# Downloading yt video with sound only and renaming it to .mp3 file only if file doesn't already exist and directory is choosen
 def runApp():
     if addFolder.path == None:
       succ = Label(text="Choose directory first!", bg="white", font=("Arial", 8))
@@ -37,7 +38,7 @@ def runApp():
       yt = YouTube(link)
       yd = yt.streams.filter(only_audio=True).first()
       yttitle = yt.title + '.mp3'
-      
+
       if find(yttitle, addFolder.path):
          succ = Label(text="You already have this file", bg="white", font=("Arial", 8))
          succ.place(width=150, height=10, x=150, y=143)     
@@ -51,8 +52,6 @@ def runApp():
          succ = Label(text="Success!", bg="white", font=("Arial", 8))
          succ.place(width=150, height=10, x=150, y=143)     
          root.after(3000, lambda: succ.destroy())
-    
-      
     
 # Hovering over buttons changes color
 def on_enter_run(e):
