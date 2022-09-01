@@ -19,22 +19,29 @@ def addFolder():
     pathDisp.delete(0,1000)
     pathDisp.insert(0,addFolder.path)
     pathDisp.config(state=DISABLED)
-    
+
+addFolder.path = None
 # Downloading yt video with sound only and renaming it to .mp3 file
 def runApp():
+    if addFolder.path == None:
+      succ = Label(text="Choose directory first!", bg="white", font=("Arial", 8))
+      succ.place(width=150, height=10, x=150, y=143)     
+      root.after(3000, lambda: succ.destroy())
+    else:
+      link = pasteUrl.get()
+      yt = YouTube(link)
+      yd = yt.streams.filter(only_audio=True).first()
+      out = yd.download(addFolder.path)
 
-    link = pasteUrl.get()
-    yt = YouTube(link)
-    yd = yt.streams.filter(only_audio=True).first()
-    out = yd.download(addFolder.path)
+      base, ext = os.path.splitext(out)
+      new_file = base + '.mp3'
+      os.rename(out, new_file)
 
-    base, ext = os.path.splitext(out)
-    new_file = base + '.mp3'
-    os.rename(out, new_file)
-
-    succ = Label(text="Success!", bg="white", font=("Arial", 8))
-    succ.place(width=150, height=10, x=150, y=143)     
-    root.after(3000, lambda: succ.destroy()) 
+      succ = Label(text="Success!", bg="white", font=("Arial", 8))
+      succ.place(width=150, height=10, x=150, y=143)     
+      root.after(3000, lambda: succ.destroy())
+    
+      
     
 # Hovering over buttons changes color
 def on_enter_run(e):
