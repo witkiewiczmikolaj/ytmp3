@@ -1,56 +1,78 @@
-
-from fileinput import filename
+from cgitb import text
 import tkinter as tk
-from tkinter import filedialog, Text
+from tkinter.filedialog import askdirectory
+from tkinter import DISABLED, NORMAL, Label
 from winreg import REG_WHOLE_HIVE_VOLATILE
 from pytube import YouTube
 import os
 
 root = tk.Tk()
-apps = []
+root.title("YT to MP3")
+root.resizable(False, False)
+root.iconbitmap("icon.ico")
+succ = Label(text="Success!", bg="white", font=("Arial", 8))
 
 def addFolder():
 
-    for widget in frame.winfo_children():
-        widget.destroy()
-
-    filename = filedialog.askopenfilename(initialdir="/", title="Select Folder", filetypes=(("executables", ".exe"), ("all files", "*.*")))
-    apps.append(filename)
-    for app in apps:
-        label = tk.Label(frame, text=app, bg="gray")
-        label.pack()
+    path = askdirectory(title='Select your folder') 
+    pathDisp.config(state=NORMAL)
+    pathDisp.delete(0,1000)
+    pathDisp.insert(0,path)
+    pathDisp.config(state=DISABLED)
 
 def runApp():
+    
+    succ.after(1000, succ.master.destroy)
+    
     link = pasteUrl.get()
     yt = YouTube(link)
     yd = yt.streams.filter(only_audio=True).first()
-    out = yd.download("D:/")
+    out = yd.download(addFolder)
 
     base, ext = os.path.splitext(out)
     new_file = base + '.mp3'
     os.rename(out, new_file)
 
-canvas = tk.Canvas(root, height=700, width=700, bg="#263D42")
+    succ.place(width=150, height=10, x=150, y=143)
+    
+
+def on_enter_run(e):
+   runApps.config(background='#182629')
+   
+def on_enter_path(e):
+   openFolder.config(background='#182629')
+
+def on_leave_run(e):
+   runApps.config(background= '#263D42')
+
+def on_leave_path(e):
+   openFolder.config(background= '#263D42')
+
+canvas = tk.Canvas(root, height=160, width=500, bg="#263D42")
 canvas.pack()
 
 frame = tk.Frame(root, bg="white")
-frame.place(relwidth=0.8, relheight=0.8, relx=0.1, rely=0.1)
+frame.place(height=150, width=490, x=7, y=7)
 
-text = Text(root)
-text.place(relwidth=0.8, relheight=0.8, relx=0.1, rely=0.1)
-text.insert("1.0", "Paste URL here:")
-text['state'] = 'disabled'
+openFolder = tk.Button(root, text="Choose folder", padx=10, pady=5, fg="white", bg="#263D42", command=addFolder)
+openFolder.place(x=10, y=10)
 
-pasteUrl = tk.Entry(root)
-canvas.create_window(235, 110, width=300, window=pasteUrl)
+pathDisp = tk.Entry(root, bg='#e8edea')
+canvas.create_window(160, 60, width=300, window=pathDisp)
 
-openFolder = tk.Button(root, text="Open folder", padx=10, pady=5, fg="white", bg="#263D42", command=addFolder)
+url = Label(text="Paste URL here:", bg="white", font=("Arial", 15))
+url.place(width=150, height=30, x=10, y=90)
 
-openFolder.pack()
+pasteUrl = tk.Entry(root, bg='#e8edea')
+canvas.create_window(160, 130, width=300, window=pasteUrl)
 
-runApp = tk.Button(root, text="Run App", padx=10, pady=5, fg="white", bg="#263D42", command=runApp)
+runApps = tk.Button(root, text="Download MP3", padx=10, pady=50, fg="white", bg="#263D42", font='sans 12 bold', command=runApp)
+runApps.place(x=330, y=16)
 
-runApp.pack()
+runApps.bind('<Enter>', on_enter_run)
+runApps.bind('<Leave>', on_leave_run)
+openFolder.bind('<Enter>', on_enter_path)
+openFolder.bind('<Leave>', on_leave_path)
 
 root.mainloop()
 
